@@ -3,10 +3,13 @@ package net.helinos.avomod
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
 
-object AvoMod : JavaPlugin() {
-    const val NAME = "AvoMod"
-    const val VERSION = "1.0.0"
-    const val ALIAS = "$NAME $VERSION"
+class AvoMod : JavaPlugin() {
+
+    companion object {
+        const val NAME = "AvoMod"
+        const val VERSION = "1.0.0"
+        const val ALIAS = "$NAME $VERSION"
+    }
 
     private val eventHandler = EventHandler()
 
