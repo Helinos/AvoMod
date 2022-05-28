@@ -11,10 +11,8 @@ class AvoMod : JavaPlugin() {
         const val ALIAS = "$NAME $VERSION"
     }
 
-    private val eventHandler = EventHandler()
-
     override fun onEnable() {
-        server.pluginManager.registerEvents(eventHandler, this)
+        server.pluginManager.registerEvents(EventHandler, this)
         Logger.info("$ALIAS enabled")
     }
 
