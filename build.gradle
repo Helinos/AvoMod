@@ -5,7 +5,9 @@ plugins {
 }
 
 group 'net.helinos'
-version '1.0-SNAPSHOT'
+version '1.0.0'
+
+sourceCompatibility = targetCompatibility = 17
 
 repositories {
     mavenCentral()
@@ -16,11 +18,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.18.2-R0.1-SNAPSHOT'
-    compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
+    compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
 }
 
 test {

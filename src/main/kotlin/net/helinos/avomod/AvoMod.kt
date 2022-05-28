@@ -1,14 +1,23 @@
 package net.helinos.avomod
 
-import org.bukkit.Bukkit
+import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
 
-class AvoMod : JavaPlugin() {
+object AvoMod : JavaPlugin() {
+    const val NAME = "AvoMod"
+    const val VERSION = "1.0.0"
+    const val ALIAS = "$NAME $VERSION"
+
+    private val eventHandler = EventHandler()
+
     override fun onEnable() {
-        Bukkit.getLogger().info("Enabled " + this.name)
+        server.pluginManager.registerEvents(eventHandler, this)
+        Logger.info("$ALIAS enabled")
     }
 
     override fun onDisable() {
-        Bukkit.getLogger().info("Disabled " + this.name)
+        // todo: idk if paper does this already
+        HandlerList.unregisterAll(this)
+        Logger.info("$ALIAS disabled")
     }
 }
