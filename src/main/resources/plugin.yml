@@ -1,5 +1,5 @@
 name: avomod
-version: 1.0
+version: 1.0.0
 author: Helinos
 main: net.helinos.avomod.AvoMod
-api-version: 1.18.2-R0.1-SNAPSHOT
+api-version: 1.18
