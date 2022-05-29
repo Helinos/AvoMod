@@ -2,13 +2,12 @@ package net.avocraft.avomod
 
 import org.bukkit.Material
 import org.bukkit.block.Block
-import org.bukkit.block.BlockState
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockPhysicsEvent
+import org.bukkit.event.block.NotePlayEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.EventHandler as EventListener
-import org.bukkit.event.block.NotePlayEvent
 
 /**
  * @author bush
@@ -22,8 +21,6 @@ object NoteblockCanceller : Listener {
         // If the player is holding something use it as normal
         // This makes it so blocks only update on the server and won't play sounds
         // This could also lead to unexpected behavior if the item being used is a fishing rod or smth
-
-
         if (
             event.action == Action.RIGHT_CLICK_BLOCK &&
             event.clickedBlock?.type == Material.NOTE_BLOCK
