@@ -13,7 +13,7 @@ class AvoMod : JavaPlugin() {
 
     override fun onEnable() {
         server.pluginManager.registerEvents(NoteblockCanceller, this)
-        server.pluginManager.registerEvents(BlockPlacer, this)
+        server.pluginManager.registerEvents(BlockHandler, this)
         this.getCommand("avgive")?.setExecutor(CommandGive)
         Logger.info("$ALIAS enabled")
     }

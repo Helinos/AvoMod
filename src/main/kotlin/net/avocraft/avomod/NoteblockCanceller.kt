@@ -2,6 +2,7 @@ package net.avocraft.avomod
 
 import org.bukkit.Material
 import org.bukkit.block.Block
+import org.bukkit.block.BlockState
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockPhysicsEvent
@@ -37,6 +38,11 @@ object NoteblockCanceller : Listener {
 
     @EventListener
     fun onNotePlay(event: NotePlayEvent) {
+        // Exception for naturally occurring notebooks
+        if (event.block.blockData.asString == "minecraft:note_block[instrument=chime,note=0]") {
+            return
+        }
+
         event.isCancelled = true
     }
 
