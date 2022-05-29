@@ -1,5 +1,9 @@
 name: avomod
 version: 1.0.0
 author: Helinos
-main: net.helinos.avomod.AvoMod
+main: net.avocraft.avomod.AvoMod
 api-version: 1.18
+commands:
+  avgive:
+    description: Give test block
+    usage: /avgive
