@@ -1,6 +1,11 @@
 package net.avocraft.avomod
 
+import net.avocraft.avomod.block.BlockHandler
+import net.avocraft.avomod.block.BlockRegistry
+import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 
 class AvoMod : JavaPlugin() {
@@ -12,9 +17,20 @@ class AvoMod : JavaPlugin() {
     }
 
     override fun onEnable() {
-        server.pluginManager.registerEvents(NoteblockCanceller, this)
+        BlockRegistry // Need to reference this to init it
         server.pluginManager.registerEvents(BlockHandler, this)
-        this.getCommand("avgive")?.setExecutor(CommandGive)
+        getCommand("avgive")?.setExecutor { sender, _, _, _ ->
+            if (sender is Player) {
+                val testBlock = ItemStack(Material.STONE)
+                val itemMeta = testBlock.itemMeta
+                itemMeta?.setCustomModelData(1)
+                itemMeta?.setDisplayName("§rTest Block")
+                testBlock.itemMeta = itemMeta
+
+                sender.player?.inventory?.addItem(testBlock)
+            }
+            true
+        }
         Logger.info("$ALIAS enabled")
     }
 

@@ -12,7 +12,7 @@ sourceCompatibility = targetCompatibility = 17
 repositories {
     mavenCentral()
     // Paper
-    maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
+    maven { url "https://papermc.io/repo/repository/maven-public/" }
     // Spigot
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
 }
@@ -21,8 +21,4 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
     compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
-}
-
-test {
-    useJUnitPlatform()
 }
