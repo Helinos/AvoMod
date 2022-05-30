@@ -1,5 +1,6 @@
 package net.avocraft.avomod.block
 
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
@@ -39,14 +40,22 @@ object BlockHandler : Listener {
     @EventHandler
     fun onBlockPlace(event: BlockPlaceEvent) {
         // ItemStack#hashCode is overridden, this will work
-        BlockRegistry.noteblockForItem(event.itemInHand)?.let {
-            event.block.blockData = it
+        event.itemInHand.itemMeta?.customModelData?.let { // If the item has CustomModelData (Same as modelId)
+            val block = BlockRegistry.noteBlockForModelId(it)
+            event.block.blockData = block
         }
     }
 
     @EventHandler
     fun onBlockBreak(event: BlockDropItemEvent) {
-        BlockRegistry.itemForNoteblock(event.block)?.let {
+        if (
+            event.player.gameMode == GameMode.CREATIVE ||
+            event.block.type != Material.NOTE_BLOCK
+        ) {
+            return
+        }
+
+        BlockRegistry.itemForNoteBlock(event.blockState)?.let {
             event.items[0]?.itemStack = it
         }
     }
