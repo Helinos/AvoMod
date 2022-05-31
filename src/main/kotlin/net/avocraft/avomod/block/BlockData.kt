@@ -9,17 +9,21 @@ import org.bukkit.inventory.ItemStack
  */
 class BlockData(
     val typeName: String,
-    displayName: String,
-    material: Material,
+    val displayName: String,
+    val material: Material,
     val modelId: Int,
     val instrument: String,
     val note: Int
 ) {
-    val item = ItemStack(material, 1).apply {
+    fun getItem(amount: Int) = ItemStack(material, amount).apply {
         val iM = this.itemMeta
         iM?.setCustomModelData(modelId)
         iM?.setDisplayName("§r$displayName")
         this.itemMeta = iM
+    }
+
+    fun asItem(): ItemData {
+        return ItemData(typeName, displayName, material, modelId)
     }
 }
 

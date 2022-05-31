@@ -3,13 +3,14 @@ package net.avocraft.avomod
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import net.avocraft.avomod.block.BlockHandler
-import net.avocraft.avomod.block.BlockRegistry
+import net.avocraft.avomod.block.MaterialRegistry
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.FurnaceRecipe
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.stream.Collectors
 
 class AvoMod : JavaPlugin() {
 
@@ -20,19 +21,39 @@ class AvoMod : JavaPlugin() {
     }
 
     override fun onEnable() {
-        BlockRegistry // Need to reference this to init it
+        MaterialRegistry // Need to reference this to init it
         server.pluginManager.registerEvents(BlockHandler, this)
 
         getCommand("avgive")?.setExecutor { sender, _, _, args ->
             if (sender is Player) {
-                val item = BlockRegistry.itemForTypeName(args[0])
-                sender.player?.inventory?.addItem(item)
+                val item = MaterialRegistry.itemForTypeName(args[1], args[2].toInt())
+                Bukkit.getPlayer(args[0])?.inventory?.addItem(item)
             }
             true
         }
 
-        getCommand("avgive")?.setTabCompleter { _, _, _, _ ->
-            BlockRegistry.blockByTypeName.keys.toList()
+        getCommand("avgive")?.setTabCompleter { sender, _, _, args ->
+            when {
+                args.size == 1 -> {
+                    val list = sender.server.onlinePlayers.stream().map(Player::getName).collect(Collectors.toList())
+                    list.remove(sender.name)
+                    list.add(0, sender.name)
+                    list
+                }
+                args.size == 2 -> {
+                    MaterialRegistry.itemByTypeName.keys.toList()
+                }
+                args.size == 3 && args[2].toIntOrNull() == null -> {
+                    val list = ArrayList<String>()
+                    list.add("[<count>]")
+                    list
+                }
+                else -> {
+                    val list = ArrayList<String>()
+                    list
+                }
+            }
+
         }
 
         Logger.info("$ALIAS enabled")

@@ -21,7 +21,7 @@ object BlockHandler : Listener {
         // This makes it so blocks only update on the server and won't play sounds
         // This could also lead to unexpected behavior if the item being used is a fishing rod or smth
         if (event.action == Action.RIGHT_CLICK_BLOCK && event.clickedBlock?.type == Material.NOTE_BLOCK) {
-            if (BlockRegistry.isReservedNoteblock(event.clickedBlock!!)) {
+            if (MaterialRegistry.isReservedNoteblock(event.clickedBlock!!)) {
                 if (event.hasItem()) event.player.isSneaking = true
                 else event.isCancelled = true
             } else {
@@ -34,14 +34,14 @@ object BlockHandler : Listener {
 
     @EventHandler
     fun onNotePlay(event: NotePlayEvent) {
-        if (BlockRegistry.isReservedNoteblock(event.block)) event.isCancelled = true
+        if (MaterialRegistry.isReservedNoteblock(event.block)) event.isCancelled = true
     }
 
     @EventHandler
     fun onBlockPlace(event: BlockPlaceEvent) {
         // ItemStack#hashCode is overridden, this will work
         event.itemInHand.itemMeta?.customModelData?.let { // If the item has CustomModelData (Same as modelId)
-            val block = BlockRegistry.noteBlockForModelId(it)
+            val block = MaterialRegistry.noteBlockForModelId(it)
             event.block.blockData = block
         }
     }
@@ -55,7 +55,7 @@ object BlockHandler : Listener {
             return
         }
 
-        BlockRegistry.itemForNoteBlock(event.blockState)?.let {
+        MaterialRegistry.itemForNoteBlock(event.blockState)?.let {
             event.items[0]?.itemStack = it
         }
     }
