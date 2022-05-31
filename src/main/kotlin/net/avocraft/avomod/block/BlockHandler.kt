@@ -57,9 +57,7 @@ object BlockHandler : Listener {
             return
         }
 
-        Logger.info(event.blockState.toString())
         MaterialRegistry.itemForNoteBlock(event.blockState)?.let {
-            Logger.info("hey")
             event.items[0]?.itemStack = it
         }
     }
