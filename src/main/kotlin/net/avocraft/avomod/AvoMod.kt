@@ -9,6 +9,8 @@ import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.FurnaceRecipe
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.RecipeChoice.ExactChoice
+import org.bukkit.inventory.ShapelessRecipe
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.stream.Collectors
 
@@ -26,7 +28,11 @@ class AvoMod : JavaPlugin() {
 
         getCommand("avgive")?.setExecutor { sender, _, _, args ->
             if (sender is Player) {
-                val item = MaterialRegistry.itemForTypeName(args[1], args[2].toInt())
+                var count = 1
+                args[2].toIntOrNull()?.let {
+                    count = it
+                }
+                val item = MaterialRegistry.itemForTypeName(args[1], count)
                 Bukkit.getPlayer(args[0])?.inventory?.addItem(item)
             }
             true
@@ -58,14 +64,19 @@ class AvoMod : JavaPlugin() {
 
         Logger.info("$ALIAS enabled")
 
-        // TODO: Test item and recipe
-        val coalCoke = ItemStack(Material.PAPER, 1)
-        val itemMeta = coalCoke.itemMeta
-        itemMeta?.setCustomModelData(1)
-        itemMeta?.setDisplayName("§rCoal Coke")
-        coalCoke.itemMeta = itemMeta
-        val key = NamespacedKey(this, "coal_coke")
-        val hey = FurnaceRecipe(key, coalCoke, Material.COAL, 0.1f, 400)
+        // TODO: Put recipes somewhere else
+        val acceleriteShard = MaterialRegistry.itemForTypeName("accelerite_shard", 1)
+        val acceleriteOre = MaterialRegistry.itemForTypeName("accelerite_ore", 1)
+        furnaceRecipe(this, acceleriteOre, acceleriteShard, 2.0f, 200)
+
+        val acceleriteIngot = MaterialRegistry.itemForTypeName("accelerite_ingot", 1)
+        val key = NamespacedKey(this, "test")
+        val hey = ShapelessRecipe(key, acceleriteIngot)
+        hey.addIngredient(ExactChoice(acceleriteShard))
+        hey.addIngredient(ExactChoice(acceleriteShard))
+        hey.addIngredient(ExactChoice(acceleriteShard))
+        hey.addIngredient(ExactChoice(acceleriteShard))
+        hey.addIngredient(Material.IRON_INGOT)
         Bukkit.addRecipe(hey)
     }
 
@@ -74,4 +85,22 @@ class AvoMod : JavaPlugin() {
         HandlerList.unregisterAll(this)
         Logger.info("$ALIAS disabled")
     }
+}
+
+fun furnaceRecipe(plugin: JavaPlugin, input: ItemStack, result: ItemStack, experience: Float, cookingTime: Int) {
+    var inputName = input.type.name
+    var resultName = result.type.name
+
+    input.itemMeta?.let {
+        inputName = it.displayName.lowercase().replace(' ', '_')
+    }
+
+    result.itemMeta?.let {
+        resultName = it.displayName.lowercase().replace(' ', '_')
+    }
+
+    val key = NamespacedKey(plugin, "${inputName}_to_${resultName}_furnace")
+    val inputChoice = ExactChoice(input)
+    val recipe = FurnaceRecipe(key, result, inputChoice, experience, cookingTime)
+    Bukkit.addRecipe(recipe)
 }

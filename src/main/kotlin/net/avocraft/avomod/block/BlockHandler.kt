@@ -1,5 +1,6 @@
 package net.avocraft.avomod.block
 
+import net.avocraft.avomod.Logger
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -40,6 +41,7 @@ object BlockHandler : Listener {
     @EventHandler
     fun onBlockPlace(event: BlockPlaceEvent) {
         // ItemStack#hashCode is overridden, this will work
+        // This throws a fat ass error whenever you place an item that isn't one of ours
         event.itemInHand.itemMeta?.customModelData?.let { // If the item has CustomModelData (Same as modelId)
             val block = MaterialRegistry.noteBlockForModelId(it)
             event.block.blockData = block
@@ -50,12 +52,14 @@ object BlockHandler : Listener {
     fun onBlockBreak(event: BlockDropItemEvent) {
         if (
             event.player.gameMode == GameMode.CREATIVE ||
-            event.block.type != Material.NOTE_BLOCK
+            event.blockState.type != Material.NOTE_BLOCK
         ) {
             return
         }
 
+        Logger.info(event.blockState.toString())
         MaterialRegistry.itemForNoteBlock(event.blockState)?.let {
+            Logger.info("hey")
             event.items[0]?.itemStack = it
         }
     }

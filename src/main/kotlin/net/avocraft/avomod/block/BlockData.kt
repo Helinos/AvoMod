@@ -9,8 +9,8 @@ import org.bukkit.inventory.ItemStack
  */
 class BlockData(
     val typeName: String,
-    val displayName: String,
-    val material: Material,
+    private val displayName: String,
+    private val material: Material,
     val modelId: Int,
     val instrument: String,
     val note: Int

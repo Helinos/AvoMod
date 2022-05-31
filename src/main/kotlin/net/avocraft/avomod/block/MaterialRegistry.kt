@@ -22,11 +22,13 @@ object MaterialRegistry {
     init {
         registerBlock(
             BlockData("test_block","Test Block", Material.STONE, 1, "banjo", 0),
-            BlockData("end_shard_ore","End Shard Ore", Material.END_STONE, 2, "banjo", 1)
+            BlockData("accelerite_ore","Accelerite Ore", Material.END_STONE, 2, "banjo", 1)
         )
 
         registerItem(
-            ItemData("coal_coke", "Coal Coke", Material.COAL, 3)
+            ItemData("coal_coke", "Coal Coke", Material.PAPER, 3),
+            ItemData("accelerite_shard", "Accelerite Shard", Material.PAPER, 4),
+            ItemData("accelerite_ingot", "Accelerite Ingot", Material.PAPER, 5)
         )
     }
 
@@ -55,8 +57,8 @@ object MaterialRegistry {
 
     fun isReservedNoteblock(block: Block) = block.blockData in reservedNoteBlocks
 
-    fun itemForTypeName(typeName: String, amount: Int): ItemStack? {
-        return itemByTypeName[typeName]?.getItem(amount)
+    fun itemForTypeName(typeName: String, amount: Int): ItemStack {
+        return itemByTypeName[typeName]?.getItem(amount)!!
     }
 
     fun itemForNoteBlock(block: BlockState): ItemStack? {
