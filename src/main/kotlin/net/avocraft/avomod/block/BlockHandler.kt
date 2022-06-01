@@ -22,7 +22,7 @@ object BlockHandler : Listener {
         // This makes it so blocks only update on the server and won't play sounds
         // This could also lead to unexpected behavior if the item being used is a fishing rod or smth
         if (event.action == Action.RIGHT_CLICK_BLOCK && event.clickedBlock?.type == Material.NOTE_BLOCK) {
-            if (MaterialRegistry.isReservedNoteblock(event.clickedBlock!!)) {
+            if (MaterialRegistry.isReservedNoteBlock(event.clickedBlock!!)) {
                 if (event.hasItem()) event.player.isSneaking = true
                 else event.isCancelled = true
             } else {
@@ -35,7 +35,7 @@ object BlockHandler : Listener {
 
     @EventHandler
     fun onNotePlay(event: NotePlayEvent) {
-        if (MaterialRegistry.isReservedNoteblock(event.block)) event.isCancelled = true
+        if (MaterialRegistry.isReservedNoteBlock(event.block)) event.isCancelled = true
     }
 
     @EventHandler

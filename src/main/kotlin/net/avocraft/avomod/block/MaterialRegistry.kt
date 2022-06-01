@@ -21,12 +21,25 @@ object MaterialRegistry {
     private val blockByNbId = HashBiMap.create<String, BlockData>()
     private val blockByModelId = HashBiMap.create<Int, BlockData>()
 
+    // Blocks
     val TEST_BLOCK = registerBlock("test_block","Test Block", Material.STONE, 1, "banjo", 0)
     val ACCELERITE_ORE = registerBlock("accelerite_ore","Accelerite Ore", Material.END_STONE, 2, "banjo", 1)
 
-    val COAL_COKE = registerItem("coal_coke", "Coal Coke", Material.PAPER, 3)
-    val ACCELERITE_SHARD = registerItem("accelerite_shard", "Accelerite Shard", Material.PAPER, 4)
-    val ACCELERITE_INGOT = registerItem("accelerite_ingot", "Accelerite Ingot", Material.PAPER, 5)
+    // Default Items
+    val COAL_COKE = registerDefaultItem("coal_coke", "Coal Coke", 3)
+    val ACCELERITE_SHARD = registerDefaultItem("accelerite_shard", "Accelerite Shard", 4)
+    val ACCELERITE_INGOT = registerDefaultItem("accelerite_ingot", "Accelerite Ingot", 5)
+
+    // Armor, Tools and Foods
+    val ACCELERITE_HELMET = registerItem("accelerite_helmet", "Accelerite Helmet", Material.LEATHER_HELMET, 6)
+    val ACCELERITE_CHESTPLATE = registerItem("accelerite_chestplate", "Accelerite Chestplate", Material.LEATHER_CHESTPLATE, 7)
+    val ACCELERITE_LEGGINGS = registerItem("accelerite_leggings", "Accelerite Leggings", Material.LEATHER_LEGGINGS, 8)
+    val ACCELERITE_BOOTS = registerItem("accelerite_boots", "Accelerite Boots", Material.LEATHER_BOOTS, 9)
+    val BERRY_PIE = registerItem("berry_pie", "Berry Pie", Material.PUMPKIN_PIE, 10)
+    val FRIED_EGG = registerItem("fried_egg", "Fried Egg", Material.COOKED_CHICKEN, 11)
+    val HONEYED_APPLE = registerItem("honeyed_apple", "Honeyed Apple", Material.COOKED_PORKCHOP, 12)
+    val CHICKEN_NUGGET = registerItem("chicken_nugget", "Chicken Nugget", Material.COOKED_RABBIT, 13)
+
 
     private fun registerBlock(
         typeName: String,
@@ -51,6 +64,14 @@ object MaterialRegistry {
         return  block
     }
 
+    private fun registerDefaultItem(
+        typeName: String,
+        displayName: String,
+        modelId: Int
+    ): ItemData {
+        return registerItem(typeName, displayName, Material.PAPER, modelId)
+    }
+
     private fun registerItem(
         typeName: String,
         displayName: String,
@@ -64,7 +85,7 @@ object MaterialRegistry {
         return item
     }
 
-    fun isReservedNoteblock(block: Block) = block.blockData in reservedNoteBlocks
+    fun isReservedNoteBlock(block: Block) = block.blockData in reservedNoteBlocks
 
     fun itemForTypeName(typeName: String, amount: Int): ItemStack {
         return itemByTypeName[typeName]?.getItem(amount)!!

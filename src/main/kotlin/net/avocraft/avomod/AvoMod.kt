@@ -65,19 +65,31 @@ class AvoMod : JavaPlugin() {
         Logger.info("$ALIAS enabled")
 
         // TODO: Put recipes somewhere else
+        // Accelerite Ore Furnace
         val acceleriteShard = MaterialRegistry.ACCELERITE_SHARD.getItem(1)
         val acceleriteOre = MaterialRegistry.ACCELERITE_ORE.getItem(1)
         furnaceRecipe(this, acceleriteOre, acceleriteShard, 2.0f, 200)
 
+        // Accelerite Ingot
         val acceleriteIngot = MaterialRegistry.ACCELERITE_INGOT.getItem(1)
-        val key = NamespacedKey(this, "test")
-        val hey = ShapelessRecipe(key, acceleriteIngot)
+        val key1 = NamespacedKey(this, "test")
+        val hey = ShapelessRecipe(key1, acceleriteIngot)
         hey.addIngredient(ExactChoice(acceleriteShard))
         hey.addIngredient(ExactChoice(acceleriteShard))
         hey.addIngredient(ExactChoice(acceleriteShard))
         hey.addIngredient(ExactChoice(acceleriteShard))
         hey.addIngredient(Material.IRON_INGOT)
         Bukkit.addRecipe(hey)
+
+        // Berry Pie
+        val berryPie = MaterialRegistry.BERRY_PIE.getItem(1)
+        val key2 = craftingKeyGen(this, berryPie)
+        val hey2 = ShapelessRecipe(key2, berryPie)
+        hey2.addIngredient(Material.WHEAT)
+        hey2.addIngredient(Material.SWEET_BERRIES)
+        hey2.addIngredient(Material.SUGAR)
+        hey2.addIngredient(Material.EGG)
+        Bukkit.addRecipe(hey2)
     }
 
     override fun onDisable() {
@@ -103,4 +115,14 @@ fun furnaceRecipe(plugin: JavaPlugin, input: ItemStack, result: ItemStack, exper
     val inputChoice = ExactChoice(input)
     val recipe = FurnaceRecipe(key, result, inputChoice, experience, cookingTime)
     Bukkit.addRecipe(recipe)
+}
+
+fun craftingKeyGen(plugin: JavaPlugin, result: ItemStack): NamespacedKey {
+    var resultName = result.type.name
+
+    result.itemMeta?.let {
+        resultName = it.displayName.lowercase().replace(' ', '_')
+    }
+
+    return NamespacedKey(plugin, "${resultName}_crafting_${Bukkit.getRecipesFor(result).size}")
 }
