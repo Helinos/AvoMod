@@ -1,6 +1,7 @@
 package net.avocraft.avomod.block
 
 import com.google.common.collect.HashBiMap
+import net.avocraft.avomod.withCount
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -87,7 +88,7 @@ object MaterialRegistry {
     fun isReservedNoteBlock(block: Block) = block.blockData in reservedNoteBlocks
 
     fun itemForTypeName(typeName: String, amount: Int): ItemStack {
-        return itemByTypeName[typeName]?.getItem(amount)!!
+        return itemByTypeName[typeName]!!.item.withCount(amount)
     }
 
     fun itemForNoteBlock(block: BlockState): ItemStack? {

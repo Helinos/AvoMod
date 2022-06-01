@@ -4,11 +4,15 @@ import org.bukkit.ChatColor.RESET
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
-class ItemData(val typeName: String, displayName: String, material: Material, modelId: Int) {
-    private val item = ItemStack(material, -1).apply {
-        itemMeta!!.setCustomModelData(modelId)
-        itemMeta!!.setDisplayName("$RESET$displayName")
-    }
-
-    fun getItem(amount: Int) = item.clone().also { it.amount = amount }
+class ItemData(
+    val typeName: String,
+    private val displayName: String,
+    private val material: Material,
+    private val modelId: Int
+) {
+    val item
+        get() = ItemStack(material, 1).apply {
+            itemMeta!!.setCustomModelData(modelId)
+            itemMeta!!.setDisplayName("$RESET$displayName")
+        }
 }
