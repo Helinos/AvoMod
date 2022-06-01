@@ -47,7 +47,7 @@ class AvoMod : JavaPlugin() {
                     list
                 }
                 args.size == 2 -> {
-                    MaterialRegistry.itemByTypeName.keys.toList()
+                    MaterialRegistry::class.java.declaredFields.map { it.name.lowercase() }
                 }
                 args.size == 3 && args[2].toIntOrNull() == null -> {
                     val list = ArrayList<String>()
@@ -65,11 +65,11 @@ class AvoMod : JavaPlugin() {
         Logger.info("$ALIAS enabled")
 
         // TODO: Put recipes somewhere else
-        val acceleriteShard = MaterialRegistry.itemForTypeName("accelerite_shard", 1)
-        val acceleriteOre = MaterialRegistry.itemForTypeName("accelerite_ore", 1)
+        val acceleriteShard = MaterialRegistry.ACCELERITE_SHARD.getItem(1)
+        val acceleriteOre = MaterialRegistry.ACCELERITE_ORE.getItem(1)
         furnaceRecipe(this, acceleriteOre, acceleriteShard, 2.0f, 200)
 
-        val acceleriteIngot = MaterialRegistry.itemForTypeName("accelerite_ingot", 1)
+        val acceleriteIngot = MaterialRegistry.ACCELERITE_INGOT.getItem(1)
         val key = NamespacedKey(this, "test")
         val hey = ShapelessRecipe(key, acceleriteIngot)
         hey.addIngredient(ExactChoice(acceleriteShard))

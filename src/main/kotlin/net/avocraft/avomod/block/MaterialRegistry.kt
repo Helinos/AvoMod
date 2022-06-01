@@ -15,51 +15,49 @@ import org.bukkit.inventory.ItemStack
 object MaterialRegistry {
     private val reservedNoteBlocks = HashSet<NoteBlock>()
 
-    val itemByTypeName: HashBiMap<String, ItemData> = HashBiMap.create()
     private val blockByNbId = HashBiMap.create<String, BlockData>()
     private val blockByModelId = HashBiMap.create<Int, BlockData>()
 
-    init {
-        registerBlock(
-            BlockData("test_block","Test Block", Material.STONE, 1, "banjo", 0),
-            BlockData("accelerite_ore","Accelerite Ore", Material.END_STONE, 2, "banjo", 1)
-        )
+    val TEST_BLOCK = registerBlock("test_block","Test Block", Material.STONE, 1, "banjo", 0)
+    val ACCELERITE_ORE = registerBlock("accelerite_ore","Accelerite Ore", Material.END_STONE, 2, "banjo", 1)
 
-        registerItem(
-            ItemData("coal_coke", "Coal Coke", Material.PAPER, 3),
-            ItemData("accelerite_shard", "Accelerite Shard", Material.PAPER, 4),
-            ItemData("accelerite_ingot", "Accelerite Ingot", Material.PAPER, 5)
-        )
+    val COAL_COKE = registerItem("coal_coke", "Coal Coke", Material.PAPER, 3)
+    val ACCELERITE_SHARD = registerItem("accelerite_shard", "Accelerite Shard", Material.PAPER, 4)
+    val ACCELERITE_INGOT = registerItem("accelerite_ingot", "Accelerite Ingot", Material.PAPER, 5)
+
+    private fun registerBlock(
+        typeName: String,
+        displayName: String,
+        material: Material,
+        modelId: Int,
+        instrument: String,
+        note: Int,
+    ): BlockData {
+        require(reservedNoteBlocks.size <= 384) { "Too many blocks!" }
+        val block = BlockData(typeName, displayName, material, modelId, instrument, note)
+
+        // Add to lists
+        blockByNbId[block.instrument + block.note] = block
+        blockByModelId[block.modelId] = block
+
+        // Reserve Noteblocks
+        val data = noteBlockForModelId(block.modelId)
+        reservedNoteBlocks.add(data)
+
+        return  block
     }
 
-    private fun registerBlock(vararg blocks: BlockData) {
-        require(blocks.size <= 384) { "Too many blocks!" }
-
-        for (block in blocks) {
-            // Add to lists
-            itemByTypeName[block.typeName] = block.asItem()
-            blockByNbId[block.instrument + block.note] = block
-            blockByModelId[block.modelId] = block
-
-            // Reserve Noteblocks
-            val data = noteBlockForModelId(block.modelId)
-            reservedNoteBlocks.add(data)
-
-        }
-    }
-
-    private fun registerItem(vararg items: ItemData) {
-        for (item in items) {
-            // Add to lists
-            itemByTypeName[item.typeName] = item
-        }
+    private fun registerItem(
+        typeName: String,
+        displayName: String,
+        material: Material,
+        modelId: Int
+    ): ItemData {
+        val item = ItemData(typeName, displayName, material, modelId)
+        return item
     }
 
     fun isReservedNoteblock(block: Block) = block.blockData in reservedNoteBlocks
-
-    fun itemForTypeName(typeName: String, amount: Int): ItemStack {
-        return itemByTypeName[typeName]?.getItem(amount)!!
-    }
 
     fun itemForNoteBlock(block: BlockState): ItemStack? {
         val (_, _, instrument, _, note) = block.blockData.asString.split('[','=',',',']') // TODO: heheheha this is very scuffed
