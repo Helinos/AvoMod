@@ -47,7 +47,7 @@ class AvoMod : JavaPlugin() {
                     list
                 }
                 args.size == 2 -> {
-                    MaterialRegistry::class.java.declaredFields.map { it.name.lowercase() }
+                    MaterialRegistry.itemByTypeName.keys.toList()
                 }
                 args.size == 3 && args[2].toIntOrNull() == null -> {
                     val list = ArrayList<String>()

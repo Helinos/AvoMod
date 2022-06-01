@@ -2,7 +2,9 @@ package net.avocraft.avomod.block
 
 import com.google.common.collect.HashBiMap
 import org.bukkit.Bukkit
+import org.bukkit.Instrument
 import org.bukkit.Material
+import org.bukkit.Note
 import org.bukkit.block.Block
 import org.bukkit.block.BlockState
 import org.bukkit.block.data.type.NoteBlock
@@ -15,6 +17,7 @@ import org.bukkit.inventory.ItemStack
 object MaterialRegistry {
     private val reservedNoteBlocks = HashSet<NoteBlock>()
 
+    val itemByTypeName: HashBiMap<String, ItemData> = HashBiMap.create()
     private val blockByNbId = HashBiMap.create<String, BlockData>()
     private val blockByModelId = HashBiMap.create<Int, BlockData>()
 
@@ -37,6 +40,7 @@ object MaterialRegistry {
         val block = BlockData(typeName, displayName, material, modelId, instrument, note)
 
         // Add to lists
+        itemByTypeName[block.typeName] = block.asItem()
         blockByNbId[block.instrument + block.note] = block
         blockByModelId[block.modelId] = block
 
@@ -54,10 +58,17 @@ object MaterialRegistry {
         modelId: Int
     ): ItemData {
         val item = ItemData(typeName, displayName, material, modelId)
+        // Add to lists
+        itemByTypeName[item.typeName] = item
+
         return item
     }
 
     fun isReservedNoteblock(block: Block) = block.blockData in reservedNoteBlocks
+
+    fun itemForTypeName(typeName: String, amount: Int): ItemStack {
+        return itemByTypeName[typeName]?.getItem(amount)!!
+    }
 
     fun itemForNoteBlock(block: BlockState): ItemStack? {
         val (_, _, instrument, _, note) = block.blockData.asString.split('[','=',',',']') // TODO: heheheha this is very scuffed
