@@ -1,18 +1,21 @@
 package net.avocraft.avomod
 
-import org.bukkit.Bukkit
-import org.bukkit.NamespacedKey
+import net.avocraft.avomod.AvoMod.Companion.NAME
 import net.avocraft.avomod.block.BlockHandler
 import net.avocraft.avomod.block.MaterialRegistry
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.entity.Player
+import org.bukkit.NamespacedKey
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.FurnaceRecipe
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice.ExactChoice
 import org.bukkit.inventory.ShapelessRecipe
 import org.bukkit.plugin.java.JavaPlugin
-import java.util.stream.Collectors
+
+val Logger: Logger = LogManager.getLogger(NAME)
 
 class AvoMod : JavaPlugin() {
 
@@ -25,44 +28,26 @@ class AvoMod : JavaPlugin() {
     override fun onEnable() {
         MaterialRegistry // Need to reference this to init it
         server.pluginManager.registerEvents(BlockHandler, this)
-
-        getCommand("avgive")?.setExecutor { sender, _, _, args ->
-            if (sender is Player) {
-                var count = 1
-                args[2].toIntOrNull()?.let {
-                    count = it
-                }
-                val item = MaterialRegistry.itemForTypeName(args[1], count)
-                Bukkit.getPlayer(args[0])?.inventory?.addItem(item)
+        getCommand("avgive")?.run {
+            setExecutor { _, _, _, args ->
+                Bukkit.getPlayer(args[0])?.inventory?.addItem(
+                    MaterialRegistry.itemForTypeName(args[1], args[2].toIntOrNull() ?: 1)
+                )
+                true
             }
-            true
-        }
-
-        getCommand("avgive")?.setTabCompleter { sender, _, _, args ->
-            when {
-                args.size == 1 -> {
-                    val list = sender.server.onlinePlayers.stream().map(Player::getName).collect(Collectors.toList())
-                    list.remove(sender.name)
-                    list.add(0, sender.name)
-                    list
-                }
-                args.size == 2 -> {
-                    MaterialRegistry.itemByTypeName.keys.toList()
-                }
-                args.size == 3 && args[2].toIntOrNull() == null -> {
-                    val list = ArrayList<String>()
-                    list.add("[<count>]")
-                    list
-                }
-                else -> {
-                    val list = ArrayList<String>()
-                    list
+            setTabCompleter { sender, _, _, args ->
+                when (args.size) {
+                    1 -> sender.server.onlinePlayers.map { it.name }.toMutableList().also {
+                        it -= sender.name
+                        it.add(0, sender.name)
+                    }
+                    2 -> MaterialRegistry.itemByTypeName.keys.toList()
+                    else -> if (args.size == 3 && args[2].toIntOrNull() == null)
+                        listOf("[<count>]")
+                    else emptyList<String>()
                 }
             }
-
         }
-
-        Logger.info("$ALIAS enabled")
 
         // TODO: Put recipes somewhere else
         // Accelerite Ore Furnace
@@ -90,6 +75,8 @@ class AvoMod : JavaPlugin() {
         hey2.addIngredient(Material.SUGAR)
         hey2.addIngredient(Material.EGG)
         Bukkit.addRecipe(hey2)
+
+        Logger.info("$ALIAS enabled")
     }
 
     override fun onDisable() {
@@ -104,11 +91,11 @@ fun furnaceRecipe(plugin: JavaPlugin, input: ItemStack, result: ItemStack, exper
     var resultName = result.type.name
 
     input.itemMeta?.let {
-        inputName = it.displayName.lowercase().replace(' ', '_')
+        inputName = it.displayName.toID()
     }
 
     result.itemMeta?.let {
-        resultName = it.displayName.lowercase().replace(' ', '_')
+        resultName = it.displayName.toID()
     }
 
     val key = NamespacedKey(plugin, "${inputName}_to_${resultName}_furnace")
@@ -121,7 +108,7 @@ fun craftingKeyGen(plugin: JavaPlugin, result: ItemStack): NamespacedKey {
     var resultName = result.type.name
 
     result.itemMeta?.let {
-        resultName = it.displayName.lowercase().replace(' ', '_')
+        resultName = it.displayName.toID()
     }
 
     return NamespacedKey(plugin, "${resultName}_crafting_${Bukkit.getRecipesFor(result).size}")

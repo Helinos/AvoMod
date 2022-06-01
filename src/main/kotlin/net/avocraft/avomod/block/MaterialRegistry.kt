@@ -2,9 +2,7 @@ package net.avocraft.avomod.block
 
 import com.google.common.collect.HashBiMap
 import org.bukkit.Bukkit
-import org.bukkit.Instrument
 import org.bukkit.Material
-import org.bukkit.Note
 import org.bukkit.block.Block
 import org.bukkit.block.BlockState
 import org.bukkit.block.data.type.NoteBlock
@@ -22,8 +20,8 @@ object MaterialRegistry {
     private val blockByModelId = HashBiMap.create<Int, BlockData>()
 
     // Blocks
-    val TEST_BLOCK = registerBlock("test_block","Test Block", Material.STONE, 1, "banjo", 0)
-    val ACCELERITE_ORE = registerBlock("accelerite_ore","Accelerite Ore", Material.END_STONE, 2, "banjo", 1)
+    val TEST_BLOCK = registerBlock("test_block", "Test Block", Material.STONE, 1, "banjo", 0)
+    val ACCELERITE_ORE = registerBlock("accelerite_ore", "Accelerite Ore", Material.END_STONE, 2, "banjo", 1)
 
     // Default Items
     val COAL_COKE = registerDefaultItem("coal_coke", "Coal Coke", 3)
@@ -32,7 +30,8 @@ object MaterialRegistry {
 
     // Armor, Tools and Foods
     val ACCELERITE_HELMET = registerItem("accelerite_helmet", "Accelerite Helmet", Material.LEATHER_HELMET, 6)
-    val ACCELERITE_CHESTPLATE = registerItem("accelerite_chestplate", "Accelerite Chestplate", Material.LEATHER_CHESTPLATE, 7)
+    val ACCELERITE_CHESTPLATE =
+        registerItem("accelerite_chestplate", "Accelerite Chestplate", Material.LEATHER_CHESTPLATE, 7)
     val ACCELERITE_LEGGINGS = registerItem("accelerite_leggings", "Accelerite Leggings", Material.LEATHER_LEGGINGS, 8)
     val ACCELERITE_BOOTS = registerItem("accelerite_boots", "Accelerite Boots", Material.LEATHER_BOOTS, 9)
     val BERRY_PIE = registerItem("berry_pie", "Berry Pie", Material.PUMPKIN_PIE, 10)
@@ -61,7 +60,7 @@ object MaterialRegistry {
         val data = noteBlockForModelId(block.modelId)
         reservedNoteBlocks.add(data)
 
-        return  block
+        return block
     }
 
     private fun registerDefaultItem(
@@ -92,7 +91,12 @@ object MaterialRegistry {
     }
 
     fun itemForNoteBlock(block: BlockState): ItemStack? {
-        val (_, _, instrument, _, note) = block.blockData.asString.split('[','=',',',']') // TODO: heheheha this is very scuffed
+        val (_, _, instrument, _, note) = block.blockData.asString.split(
+            '[',
+            '=',
+            ',',
+            ']'
+        ) // TODO: heheheha this is very scuffed
         val nbId = instrument + note
         return blockByNbId[nbId]?.getItem(1)
     }

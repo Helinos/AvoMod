@@ -1,9 +1,8 @@
 package net.avocraft.avomod.block
 
-import net.avocraft.avomod.Logger
 import org.bukkit.GameMode
 import org.bukkit.Material
-import org.bukkit.block.Block
+import org.bukkit.block.BlockFace.UP
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.*
@@ -66,24 +65,15 @@ object BlockHandler : Listener {
     @EventHandler
     fun onBlockPhysics(event: BlockPhysicsEvent) {
         // todo update this to check if the block change will turn a normal noteblock into a reserved block
-        val aboveBlock = event.block.getRelative(0, 1, 0)
-        if (aboveBlock.type == Material.NOTE_BLOCK) {
-            recursiveVerticalCheck(aboveBlock)
+        var aboveBlock = event.block.getRelative(UP)
+        while (aboveBlock.type == Material.NOTE_BLOCK) {
             event.isCancelled = true
+            aboveBlock.state.update(true, true)
+            aboveBlock = aboveBlock.getRelative(UP)
         }
         if (event.block.type == Material.NOTE_BLOCK) {
             event.isCancelled = true
-        }
-        event.block.state.update(true, false)
-    }
-
-    private tailrec fun recursiveVerticalCheck(block: Block) {
-        if (block.type == Material.NOTE_BLOCK) {
-            block.state.update(true, true)
-        }
-        val nextBlock = block.getRelative(0, 1, 0)
-        if (nextBlock.type == Material.NOTE_BLOCK) {
-            recursiveVerticalCheck(nextBlock)
+            event.block.state.update(true, false)
         }
     }
 }
