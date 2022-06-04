@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "instrument=banjo,note=0": {
+            "model": "avocraft:block/test"
+        },
+	"instrument=banjo,note=1": {
+            "model": "avocraft:block/accelerite_ore"
+        }
+    }
+}

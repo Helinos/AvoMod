@@ -1,0 +1,14 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "minecraft:item/pumpkin_pie"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "custom_model_data": 10
+            },
+            "model":"avocraft:item/berry_pie"
+        }
+    ]
+}
