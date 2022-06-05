@@ -17,6 +17,7 @@ object RecipeHandler : Listener {
             else -> return
         }
 
+        // This doesn't apply to dying armor for whatever reason
         if (key.startsWith("minecraft")) {
             for (item in event.inventory.matrix.filterNotNull()) {
                 if (item.itemMeta?.hasCustomModelData() == true) {

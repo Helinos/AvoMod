@@ -47,6 +47,18 @@ object RecipeRegistry {
                         )
                     )
                 }
+                "campfire" -> {
+                    val result = stackOf(json["result"]!!.toString())
+                    Bukkit.addRecipe(
+                        CampfireRecipe(
+                            getKey(result, "campfire"),
+                            result,
+                            ExactChoice(stackOf(json["input"]!!.toString())),
+                            json["experience"]!!.jsonPrimitive.float,
+                            json["time"]!!.jsonPrimitive.int
+                        )
+                    )
+                }
                 "smoker" -> {
                     val result = stackOf(json["result"]!!.toString())
                     Bukkit.addRecipe(
