@@ -28,12 +28,12 @@ object RecipeRegistry {
     }
 
     private fun shardFurnaceRecipe() {
-        val shard = MaterialRegistry.ACCELERITE_SHARD.item
+        val shard = MaterialRegistry.ACCELERITE_SHARD.item()
         Bukkit.addRecipe(
             FurnaceRecipe(
                 getKey(shard, "furnace"),
                 shard,
-                ExactChoice(MaterialRegistry.ACCELERITE_ORE.getItem(1)),
+                ExactChoice(MaterialRegistry.ACCELERITE_ORE.item()),
                 2f,
                 200
             )
@@ -41,8 +41,8 @@ object RecipeRegistry {
     }
 
     private fun ingotCraftingRecipe() {
-        val shard = MaterialRegistry.ACCELERITE_SHARD.item
-        val ingot = MaterialRegistry.ACCELERITE_INGOT.item
+        val shard = MaterialRegistry.ACCELERITE_SHARD.item()
+        val ingot = MaterialRegistry.ACCELERITE_INGOT.item()
         Bukkit.addRecipe(ShapelessRecipe(getKey(ingot, "crafting"), ingot).apply {
             addIngredient(ExactChoice(shard))
             addIngredient(ExactChoice(shard))
@@ -53,7 +53,7 @@ object RecipeRegistry {
     }
 
     private fun berryPieCraftingRecipe() {
-        val berryPie = MaterialRegistry.BERRY_PIE.item
+        val berryPie = MaterialRegistry.BERRY_PIE.item()
         Bukkit.addRecipe(ShapelessRecipe(getKey(berryPie, "crafting"), berryPie).apply {
             addIngredient(WHEAT)
             addIngredient(SWEET_BERRIES)
