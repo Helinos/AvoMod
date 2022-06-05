@@ -1,12 +1,21 @@
 package net.avocraft.avomod.block
 
 import com.google.common.collect.HashBiMap
+import com.google.common.collect.HashMultimap
+import com.google.common.collect.Multimap
+import it.unimi.dsi.fastutil.Hash
+import net.avocraft.avomod.Logger
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
 import org.bukkit.block.Block
 import org.bukkit.block.BlockState
 import org.bukkit.block.data.type.NoteBlock
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import java.util.*
+import kotlin.collections.HashSet
 
 /**
  * @author bush
@@ -24,21 +33,70 @@ object MaterialRegistry {
     val ACCELERITE_ORE = registerBlock("accelerite_ore", "Accelerite Ore", Material.END_STONE, 2, "banjo", 1)
 
     // Default Items
-    val COAL_COKE = registerDefaultItem("coal_coke", "Coal Coke", 3)
-    val ACCELERITE_SHARD = registerDefaultItem("accelerite_shard", "Accelerite Shard", 4)
-    val ACCELERITE_INGOT = registerDefaultItem("accelerite_ingot", "Accelerite Ingot", 5)
+    val COAL_COKE = registerItem("coal_coke", "Coal Coke", 3)
+    val ACCELERITE_SHARD = registerItem("accelerite_shard", "Accelerite Shard", 4)
+    val ACCELERITE_INGOT = registerItem("accelerite_ingot", "Accelerite Ingot", 5)
 
-    // Armor, Tools and Foods
-    val ACCELERITE_HELMET = registerItem("accelerite_helmet", "Accelerite Helmet", Material.LEATHER_HELMET, 6)
+    // Foods
+    val BERRY_PIE = registerItem("berry_pie", "Berry Pie", 10, Material.PUMPKIN_PIE)
+    val FRIED_EGG = registerItem("fried_egg", "Fried Egg", 11, Material.COOKED_CHICKEN)
+    val HONEYED_APPLE = registerItem("honeyed_apple", "Honeyed Apple", 12, Material.COOKED_PORKCHOP)
+    val CHICKEN_NUGGET = registerItem("chicken_nugget", "Chicken Nugget", 13, Material.COOKED_RABBIT)
+
+    // Items with attributes (Armor, tools)
+    val ACCELERITE_HELMET = registerItem(
+        "accelerite_helmet",
+        "Accelerite Helmet",
+        6,
+        Material.LEATHER_HELMET,
+        HashMultimap.create<Attribute, AttributeModifier>().apply {
+            this.put(
+                Attribute.GENERIC_ARMOR,
+                AttributeModifier(UUID.randomUUID(),"generic.armor", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
+            )
+            this.put(
+                Attribute.GENERIC_ARMOR_TOUGHNESS,
+                AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 1.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
+            )
+        }
+    )
     val ACCELERITE_CHESTPLATE =
-        registerItem("accelerite_chestplate", "Accelerite Chestplate", Material.LEATHER_CHESTPLATE, 7)
-    val ACCELERITE_LEGGINGS = registerItem("accelerite_leggings", "Accelerite Leggings", Material.LEATHER_LEGGINGS, 8)
-    val ACCELERITE_BOOTS = registerItem("accelerite_boots", "Accelerite Boots", Material.LEATHER_BOOTS, 9)
-    val BERRY_PIE = registerItem("berry_pie", "Berry Pie", Material.PUMPKIN_PIE, 10)
-    val FRIED_EGG = registerItem("fried_egg", "Fried Egg", Material.COOKED_CHICKEN, 11)
-    val HONEYED_APPLE = registerItem("honeyed_apple", "Honeyed Apple", Material.COOKED_PORKCHOP, 12)
-    val CHICKEN_NUGGET = registerItem("chicken_nugget", "Chicken Nugget", Material.COOKED_RABBIT, 13)
-
+        registerItem("accelerite_chestplate", "Accelerite Chestplate", 7, Material.LEATHER_CHESTPLATE,
+            HashMultimap.create<Attribute, AttributeModifier>().apply {
+                this.put(
+                    Attribute.GENERIC_ARMOR,
+                    AttributeModifier(UUID.randomUUID(),"generic.armor", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
+                )
+                this.put(
+                    Attribute.GENERIC_ARMOR_TOUGHNESS,
+                    AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 1.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
+                )
+            }
+        )
+    val ACCELERITE_LEGGINGS = registerItem("accelerite_leggings", "Accelerite Leggings", 8, Material.LEATHER_LEGGINGS,
+        HashMultimap.create<Attribute, AttributeModifier>().apply {
+            this.put(
+                Attribute.GENERIC_ARMOR,
+                AttributeModifier(UUID.randomUUID(),"generic.armor", 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS)
+            )
+            this.put(
+                Attribute.GENERIC_ARMOR_TOUGHNESS,
+                AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 1.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS)
+            )
+        }
+    )
+    val ACCELERITE_BOOTS = registerItem("accelerite_boots", "Accelerite Boots", 9, Material.LEATHER_BOOTS,
+        HashMultimap.create<Attribute, AttributeModifier>().apply {
+            this.put(
+                Attribute.GENERIC_ARMOR,
+                AttributeModifier(UUID.randomUUID(),"generic.armor", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET)
+            )
+            this.put(
+                Attribute.GENERIC_ARMOR_TOUGHNESS,
+                AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 1.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET)
+            )
+        }
+    )
 
     private fun registerBlock(
         typeName: String,
@@ -63,21 +121,16 @@ object MaterialRegistry {
         return block
     }
 
-    private fun registerDefaultItem(
-        typeName: String,
-        displayName: String,
-        modelId: Int
-    ): AvoItem {
-        return registerItem(typeName, displayName, Material.PAPER, modelId)
-    }
-
     private fun registerItem(
         typeName: String,
         displayName: String,
-        material: Material,
-        modelId: Int
+        modelId: Int,
+        material: Material = Material.PAPER,
+        // hasAttributeModifiers: Boolean = false,
+        attributeModifiers: HashMultimap<Attribute, AttributeModifier>? = null
     ): AvoItem {
-        val item = AvoItem("avocraft:$typeName", displayName, material, modelId)
+        val item = AvoItem("avocraft:$typeName", displayName, material, modelId, attributeModifiers)
+
         // Add to lists
         itemByTypeName[item.typeName] = item
 

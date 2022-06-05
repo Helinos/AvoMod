@@ -1,0 +1,5 @@
+{
+  "result": "avocraft:accelerite_boots",
+  "base": "minecraft:diamond_boots",
+  "addition": "avocraft:accelerite_ingot"
+}

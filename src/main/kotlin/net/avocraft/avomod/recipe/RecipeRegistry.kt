@@ -7,10 +7,8 @@ import net.avocraft.avomod.metaNameOrDefault
 import net.avocraft.avomod.stackOf
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
-import org.bukkit.inventory.FurnaceRecipe
-import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.*
 import org.bukkit.inventory.RecipeChoice.ExactChoice
-import org.bukkit.inventory.ShapelessRecipe
 import java.nio.file.Files
 import kotlin.io.path.name
 import kotlin.io.path.readText
@@ -37,6 +35,30 @@ object RecipeRegistry {
                         )
                     )
                 }
+                "blast_furnace" -> {
+                    val result = stackOf(json["result"]!!.toString())
+                    Bukkit.addRecipe(
+                        BlastingRecipe(
+                            getKey(result, "blast_furnace"),
+                            result,
+                            ExactChoice(stackOf(json["input"]!!.toString())),
+                            json["experience"]!!.jsonPrimitive.float,
+                            json["time"]!!.jsonPrimitive.int
+                        )
+                    )
+                }
+                "smoker" -> {
+                    val result = stackOf(json["result"]!!.toString())
+                    Bukkit.addRecipe(
+                        SmokingRecipe(
+                            getKey(result, "smoker"),
+                            result,
+                            ExactChoice(stackOf(json["input"]!!.toString())),
+                            json["experience"]!!.jsonPrimitive.float,
+                            json["time"]!!.jsonPrimitive.int
+                        )
+                    )
+                }
                 "shapeless" -> {
                     val result = stackOf(json["result"]!!.toString())
                     Bukkit.addRecipe(ShapelessRecipe(getKey(result, "crafting"), result).apply {
@@ -47,6 +69,17 @@ object RecipeRegistry {
                             }
                         }
                     })
+                }
+                "smithing" -> {
+                    val result = stackOf(json["result"]!!.toString())
+                    Bukkit.addRecipe(
+                        SmithingRecipe(
+                            getKey(result, "smithing"),
+                            result,
+                            ExactChoice(stackOf(json["base"]!!.toString())),
+                            ExactChoice(stackOf(json["addition"]!!.toString())),
+                        )
+                    )
                 }
                 "idk?? are we going to have shaped 3x3 and shaped 2x2 or how is this going to work" -> TODO()
             }

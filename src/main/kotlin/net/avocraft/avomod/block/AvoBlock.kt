@@ -16,9 +16,9 @@ class AvoBlock(
     val note: Int
 ) {
     fun item(amount: Int = 1) = ItemStack(material, amount).apply {
-        val iM = this.itemMeta
-        iM?.setCustomModelData(modelId)
-        iM?.setDisplayName("§r$displayName")
+        val iM = this.itemMeta!!
+        iM.setCustomModelData(modelId)
+        iM.setDisplayName("§r$displayName")
         this.itemMeta = iM
     }
 

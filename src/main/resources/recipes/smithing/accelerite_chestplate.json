@@ -1,0 +1,5 @@
+{
+  "result": "avocraft:accelerite_chestplate",
+  "base": "minecraft:diamond_chestplate",
+  "addition": "avocraft:accelerite_ingot"
+}

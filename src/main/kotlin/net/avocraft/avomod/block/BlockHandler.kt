@@ -40,11 +40,13 @@ object BlockHandler : Listener {
     @EventHandler
     fun onBlockPlace(event: BlockPlaceEvent) {
         // ItemStack#hashCode is overridden, this will work
-        // This throws a fat ass error whenever you place an item that isn't one of ours
-        event.itemInHand.itemMeta?.customModelData?.let { // If the item has CustomModelData (Same as modelId)
-            val block = MaterialRegistry.noteBlockForModelId(it)
-            event.block.blockData = block
+        if (event.itemInHand.itemMeta?.hasCustomModelData() == true) {
+            event.itemInHand.itemMeta?.customModelData?.let { // If the item has CustomModelData (Same as modelId)
+                val block = MaterialRegistry.noteBlockForModelId(it)
+                event.block.blockData = block
+            }
         }
+
     }
 
     @EventHandler
