@@ -1,6 +1,10 @@
-package net.avocraft.avomod
+package net.avocraft.avomod.recipe
 
 import kotlinx.serialization.json.*
+import net.avocraft.avomod.Plugin
+import net.avocraft.avomod.getResource
+import net.avocraft.avomod.metaNameOrDefault
+import net.avocraft.avomod.stackOf
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.FurnaceRecipe

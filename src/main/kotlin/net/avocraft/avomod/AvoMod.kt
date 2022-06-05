@@ -3,6 +3,8 @@ package net.avocraft.avomod
 import net.avocraft.avomod.AvoMod.Companion.NAME
 import net.avocraft.avomod.block.BlockHandler
 import net.avocraft.avomod.block.MaterialRegistry
+import net.avocraft.avomod.recipe.RecipeHandler
+import net.avocraft.avomod.recipe.RecipeRegistry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.bukkit.Bukkit
@@ -28,10 +30,14 @@ class AvoMod : JavaPlugin() {
     override fun onEnable() {
         MaterialRegistry // Need to reference this to init it
         server.pluginManager.registerEvents(BlockHandler, this)
+        server.pluginManager.registerEvents(RecipeHandler, this)
         getCommand("avgive")?.run {
             setExecutor { _, _, _, args ->
+                var typeName = args[1]
+                if (!typeName.startsWith("avocraft:"))
+                    typeName = "avocraft:$typeName"
                 Bukkit.getPlayer(args[0])?.inventory?.addItem(
-                    MaterialRegistry.itemForTypeName(args[1], args[2].toIntOrNull() ?: 1)
+                    MaterialRegistry.itemForTypeName(typeName, args.getOrNull(2)?.toIntOrNull() ?: 1)
                 )
                 true
             }
@@ -40,9 +46,13 @@ class AvoMod : JavaPlugin() {
                     1 -> sender.server.onlinePlayers.map { it.name }.toMutableList().also {
                         it -= sender.name
                         it.add(0, sender.name)
+                    }.filter {
+                        it.contains(args[0])
                     }
-                    2 -> MaterialRegistry.itemByTypeName.keys.toList()
-                    else -> if (args.size == 3 && args[2].toIntOrNull() == null)
+                    2 -> MaterialRegistry.itemByTypeName.keys.toList().filter {
+                        it.contains(args[1])
+                    }
+                    else -> if (args.size == 3 && args.getOrNull(2) == null)
                         listOf("[<count>]")
                     else emptyList<String>()
                 }
