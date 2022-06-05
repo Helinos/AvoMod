@@ -1,6 +1,6 @@
 {
-  "result": "fired_egg",
-  "input": "egg",
+  "result": "avocraft:fried_egg",
+  "input": "minecraft:egg",
   "experience": 0.35,
   "time": 200
 }

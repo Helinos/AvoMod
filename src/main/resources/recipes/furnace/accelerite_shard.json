@@ -1,6 +1,6 @@
 {
-  "result": "accelerite_shard",
-  "input": "accelerite_ore",
+  "result": "avocraft:accelerite_shard",
+  "input": "avocraft:accelerite_ore",
   "experience": 2.0,
   "time": 200
 }

@@ -1,9 +1,9 @@
 {
-  "result": "berry_pie",
+  "result": "avocraft:berry_pie",
   "ingredients": {
-    "wheat": 1,
-    "sweet_berries": 1,
-    "sugar": 1,
-    "egg": 1
+    "minecraft:wheat": 1,
+    "minecraft:sweet_berries": 1,
+    "minecraft:sugar": 1,
+    "minecraft:egg": 1
   }
 }

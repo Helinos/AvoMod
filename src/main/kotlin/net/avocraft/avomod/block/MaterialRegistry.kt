@@ -49,7 +49,7 @@ object MaterialRegistry {
         note: Int,
     ): AvoBlock {
         require(reservedNoteBlocks.size <= 384) { "Too many blocks!" }
-        val block = AvoBlock(typeName, displayName, material, modelId, instrument, note)
+        val block = AvoBlock("avocraft:$typeName", displayName, material, modelId, instrument, note)
 
         // Add to lists
         itemByTypeName[block.typeName] = block.asAvoItem()
@@ -68,7 +68,7 @@ object MaterialRegistry {
         displayName: String,
         modelId: Int
     ): AvoItem {
-        return registerItem(typeName, displayName, Material.PAPER, modelId)
+        return registerItem("avocraft:$typeName", displayName, Material.PAPER, modelId)
     }
 
     private fun registerItem(
@@ -77,7 +77,7 @@ object MaterialRegistry {
         material: Material,
         modelId: Int
     ): AvoItem {
-        val item = AvoItem(typeName, displayName, material, modelId)
+        val item = AvoItem("avocraft:$typeName", displayName, material, modelId)
         // Add to lists
         itemByTypeName[item.typeName] = item
 
