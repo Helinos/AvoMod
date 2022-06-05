@@ -16,9 +16,9 @@ import org.bukkit.inventory.ItemStack
 object MaterialRegistry {
     private val reservedNoteBlocks = HashSet<NoteBlock>()
 
-    val itemByTypeName: HashBiMap<String, ItemData> = HashBiMap.create()
-    private val blockByNbId = HashBiMap.create<String, BlockData>()
-    private val blockByModelId = HashBiMap.create<Int, BlockData>()
+    val itemByTypeName: HashBiMap<String, AvoItem> = HashBiMap.create()
+    private val blockByNbId = HashBiMap.create<String, AvoBlock>()
+    private val blockByModelId = HashBiMap.create<Int, AvoBlock>()
 
     // Blocks
     val TEST_BLOCK = registerBlock("test_block", "Test Block", Material.STONE, 1, "banjo", 0)
@@ -48,12 +48,12 @@ object MaterialRegistry {
         modelId: Int,
         instrument: String,
         note: Int,
-    ): BlockData {
+    ): AvoBlock {
         require(reservedNoteBlocks.size <= 384) { "Too many blocks!" }
-        val block = BlockData("avocraft:$typeName", displayName, material, modelId, instrument, note)
+        val block = AvoBlock("avocraft:$typeName", displayName, material, modelId, instrument, note)
 
         // Add to lists
-        itemByTypeName[block.typeName] = block.asItem()
+        itemByTypeName[block.typeName] = block.asAvoItem()
         blockByNbId[block.instrument + block.note] = block
         blockByModelId[block.modelId] = block
 
@@ -68,7 +68,7 @@ object MaterialRegistry {
         typeName: String,
         displayName: String,
         modelId: Int
-    ): ItemData {
+    ): AvoItem {
         return registerItem("avocraft:$typeName", displayName, Material.PAPER, modelId)
     }
 
@@ -77,8 +77,8 @@ object MaterialRegistry {
         displayName: String,
         material: Material,
         modelId: Int
-    ): ItemData {
-        val item = ItemData("avocraft:$typeName", displayName, material, modelId)
+    ): AvoItem {
+        val item = AvoItem("avocraft:$typeName", displayName, material, modelId)
         // Add to lists
         itemByTypeName[item.typeName] = item
 
@@ -88,7 +88,7 @@ object MaterialRegistry {
     fun isReservedNoteBlock(block: Block) = block.blockData in reservedNoteBlocks
 
     fun itemForTypeName(typeName: String, amount: Int): ItemStack {
-        return itemByTypeName[typeName]!!.item.withCount(amount)
+        return itemByTypeName[typeName]!!.item()
     }
 
     fun itemForNoteBlock(block: BlockState): ItemStack? {
@@ -99,7 +99,7 @@ object MaterialRegistry {
             ']'
         ) // TODO: heheheha this is very scuffed
         val nbId = instrument + note
-        return blockByNbId[nbId]?.getItem(1)
+        return blockByNbId[nbId]?.item()
     }
 
     fun noteBlockForModelId(modelId: Int): NoteBlock {
