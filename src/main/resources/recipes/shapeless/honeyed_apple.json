@@ -1,7 +1,7 @@
 {
-  "result": "honeyed_apple",
+  "result": "avocraft:honeyed_apple",
   "ingredients": {
-    "honey_bottle": 1,
-    "apple": 1
+    "minecraft:honey_bottle": 1,
+    "minecraft:apple": 1
   }
 }

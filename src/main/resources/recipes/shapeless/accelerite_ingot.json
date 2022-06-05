@@ -1,7 +1,7 @@
 {
-  "result": "accelerite_ingot",
+  "result": "avocraft:accelerite_ingot",
   "ingredients": {
-    "accelerite_shard": 4,
-    "iron_ingot": 1
+    "avocraft:accelerite_shard": 4,
+    "minecraft:iron_ingot": 1
   }
 }

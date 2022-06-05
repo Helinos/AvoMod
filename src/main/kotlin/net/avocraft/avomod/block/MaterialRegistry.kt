@@ -50,7 +50,7 @@ object MaterialRegistry {
         note: Int,
     ): BlockData {
         require(reservedNoteBlocks.size <= 384) { "Too many blocks!" }
-        val block = BlockData(typeName, displayName, material, modelId, instrument, note)
+        val block = BlockData("avocraft:$typeName", displayName, material, modelId, instrument, note)
 
         // Add to lists
         itemByTypeName[block.typeName] = block.asItem()
@@ -69,7 +69,7 @@ object MaterialRegistry {
         displayName: String,
         modelId: Int
     ): ItemData {
-        return registerItem(typeName, displayName, Material.PAPER, modelId)
+        return registerItem("avocraft:$typeName", displayName, Material.PAPER, modelId)
     }
 
     private fun registerItem(
@@ -78,7 +78,7 @@ object MaterialRegistry {
         material: Material,
         modelId: Int
     ): ItemData {
-        val item = ItemData(typeName, displayName, material, modelId)
+        val item = ItemData("avocraft:$typeName", displayName, material, modelId)
         // Add to lists
         itemByTypeName[item.typeName] = item
 
