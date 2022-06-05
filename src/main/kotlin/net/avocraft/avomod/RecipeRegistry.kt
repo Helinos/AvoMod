@@ -18,7 +18,7 @@ object RecipeRegistry {
     //  throws if anything is null. we could add a more helpful message or something.
 
     fun registerRecipes() {
-        Files.list(getResource("/recipes/")).filter { it.name.endsWith(".json") }.forEach { file ->
+        Files.walk(getResource("/recipes")).filter { it.name.endsWith(".json") }.forEach { file ->
             val json = Json.parseToJsonElement(file.readText()).jsonObject
             when (file.parent.name) {
                 "furnace" -> {

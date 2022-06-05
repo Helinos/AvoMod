@@ -68,7 +68,7 @@ object MaterialRegistry {
         displayName: String,
         modelId: Int
     ): AvoItem {
-        return registerItem("avocraft:$typeName", displayName, Material.PAPER, modelId)
+        return registerItem(typeName, displayName, Material.PAPER, modelId)
     }
 
     private fun registerItem(
@@ -87,7 +87,7 @@ object MaterialRegistry {
     fun isReservedNoteBlock(block: Block) = block.blockData in reservedNoteBlocks
 
     fun itemForTypeName(typeName: String, amount: Int): ItemStack {
-        return itemByTypeName[typeName]!!.item()
+        return itemByTypeName[typeName]!!.item(amount)
     }
 
     fun itemForNoteBlock(block: BlockState): ItemStack? {

@@ -23,8 +23,19 @@ fun Any.getResource(folder: String) = this::class.java.getResource(folder)!!.toU
 }
 
 // This will throw an NPE if an item isn't valid
-fun stackOf(name: String, count: Int = 1): ItemStack = when {
-    name.startsWith("minecraft:") -> ItemStack(Material.getMaterial(name)!!, count)
-    name.startsWith("avocraft:") -> MaterialRegistry.itemForTypeName(name, count)
-    else -> stackOf("minecraft:$name", count)
+fun stackOf(rawName: String, count: Int = 1): ItemStack {
+    val name = rawName.removeSurrounding("\"")
+    try {
+        return when {
+            name.startsWith("minecraft:") -> ItemStack(
+                Material.getMaterial(
+                    name.removePrefix("minecraft:").uppercase()
+                )!!, count
+            )
+            name.startsWith("avocraft:") -> MaterialRegistry.itemForTypeName(name, count)
+            else -> stackOf("minecraft:$name", count)
+        }
+    } catch (e: NullPointerException) {
+        throw Exception("$name is not a valid item!") // This may make it hard to know exactly which recipe caused this
+    }
 }
