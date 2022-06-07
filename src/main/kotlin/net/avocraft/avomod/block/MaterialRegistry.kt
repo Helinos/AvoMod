@@ -2,9 +2,6 @@ package net.avocraft.avomod.block
 
 import com.google.common.collect.HashBiMap
 import com.google.common.collect.HashMultimap
-import com.google.common.collect.Multimap
-import it.unimi.dsi.fastutil.Hash
-import net.avocraft.avomod.Logger
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
@@ -25,9 +22,10 @@ import kotlin.collections.HashSet
 object MaterialRegistry {
     private val reservedNoteBlocks = HashSet<NoteBlock>()
 
-    val itemByTypeName: HashBiMap<String, AvoItem> = HashBiMap.create()
-    private val blockByNbId = HashBiMap.create<String, AvoBlock>()
-    private val blockByModelId = HashBiMap.create<Int, AvoBlock>()
+    val avoItemByTypeName: HashBiMap<String, AvoItem> = HashBiMap.create()
+    val avoItemByModelId: HashBiMap<Int, AvoItem> = HashBiMap.create<Int, AvoItem>()
+    private val avoBlockByNbId = HashBiMap.create<String, AvoBlock>()
+    private val avoBlockByModelId = HashBiMap.create<Int, AvoBlock>()
 
     // 1 - 1000 Blocks
     val TEST_BLOCK = registerBlock("test_block", "Test Block", Material.STONE, 1, "banjo", 0)
@@ -69,7 +67,8 @@ object MaterialRegistry {
                 Attribute.GENERIC_MOVEMENT_SPEED,
                 AttributeModifier(UUID.randomUUID(), "generic.movement_speed", 0.1, AttributeModifier.Operation.ADD_SCALAR, EquipmentSlot.HEAD)
             )
-        }
+        },
+        319
     )
     val ACCELERITE_CHESTPLATE =
         registerItem(
@@ -91,7 +90,8 @@ object MaterialRegistry {
                     Attribute.GENERIC_MOVEMENT_SPEED,
                     AttributeModifier(UUID.randomUUID(), "generic.movement_speed", 0.1, AttributeModifier.Operation.ADD_SCALAR, EquipmentSlot.CHEST)
                 )
-            }
+            },
+            464
         )
     val ACCELERITE_LEGGINGS = registerItem(
         "accelerite_leggings",
@@ -112,7 +112,8 @@ object MaterialRegistry {
                 Attribute.GENERIC_MOVEMENT_SPEED,
                 AttributeModifier(UUID.randomUUID(), "generic.movement_speed", 0.1, AttributeModifier.Operation.ADD_SCALAR, EquipmentSlot.LEGS)
             )
-        }
+        },
+        435
     )
     val ACCELERITE_BOOTS = registerItem(
         "accelerite_boots",
@@ -133,7 +134,8 @@ object MaterialRegistry {
                 Attribute.GENERIC_MOVEMENT_SPEED,
                 AttributeModifier(UUID.randomUUID(), "generic.movement_speed", 0.1, AttributeModifier.Operation.ADD_SCALAR, EquipmentSlot.FEET)
             )
-        }
+        },
+        377
     )
     // Items with attributes (Armor, tools)
     val CARBONADO_HELMET = registerItem(
@@ -151,7 +153,8 @@ object MaterialRegistry {
                 Attribute.GENERIC_ARMOR_TOUGHNESS,
                 AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
             )
-        }
+        },
+        495
     )
     val CARBONADO_CHESTPLATE =
         registerItem(
@@ -169,7 +172,8 @@ object MaterialRegistry {
                     Attribute.GENERIC_ARMOR_TOUGHNESS,
                     AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
                 )
-            }
+            },
+            720
         )
     val CARBONADO_LEGGINGS = registerItem(
         "carbonado_leggings",
@@ -186,7 +190,8 @@ object MaterialRegistry {
                 Attribute.GENERIC_ARMOR_TOUGHNESS,
                 AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS)
             )
-        }
+        },
+        675
     )
     val CARBONADO_BOOTS = registerItem(
         "carbonado_boots",
@@ -203,7 +208,8 @@ object MaterialRegistry {
                 Attribute.GENERIC_ARMOR_TOUGHNESS,
                 AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET)
             )
-        }
+        },
+        585
     )
 
     private fun registerBlock(
@@ -213,17 +219,18 @@ object MaterialRegistry {
         modelId: Int,
         instrument: String,
         note: Int,
+
     ): AvoBlock {
         require(reservedNoteBlocks.size <= 384) { "Too many blocks!" }
         val block = AvoBlock("avocraft:$typeName", displayName, material, modelId, instrument, note)
 
         // Add to lists
-        itemByTypeName[block.typeName] = block.asAvoItem()
-        blockByNbId[block.instrument + block.note] = block
-        blockByModelId[block.modelId] = block
+        avoItemByTypeName["avocraft:$typeName"] = block.asAvoItem()
+        avoBlockByNbId[instrument + note] = block
+        avoBlockByModelId[modelId] = block
 
         // Reserve Noteblocks
-        val data = noteBlockForModelId(block.modelId)
+        val data = noteBlockForModelId(modelId)
         reservedNoteBlocks.add(data)
 
         return block
@@ -236,23 +243,29 @@ object MaterialRegistry {
         material: Material = Material.PAPER,
         // hasAttributeModifiers: Boolean = false,
         color: Color? = null,
-        attributeModifiers: HashMultimap<Attribute, AttributeModifier>? = null
+        attributeModifiers: HashMultimap<Attribute, AttributeModifier>? = null,
+        maxDurability: Int? = null,
     ): AvoItem {
-        val item = AvoItem("avocraft:$typeName", displayName, material, modelId, color, attributeModifiers)
+        val item = AvoItem("avocraft:$typeName", displayName, material, modelId, color, attributeModifiers, maxDurability)
 
         // Add to lists
-        itemByTypeName[item.typeName] = item
+        avoItemByTypeName["avocraft:$typeName"] = item
+        avoItemByModelId[modelId] = item
 
         return item
     }
 
     fun isReservedNoteBlock(block: Block) = block.blockData in reservedNoteBlocks
 
-    fun itemForTypeName(typeName: String, amount: Int): ItemStack {
-        return itemByTypeName[typeName]!!.item(amount)
+    fun itemForTypeName(typeName: String, amount: Int = 1): ItemStack {
+        return avoItemByTypeName[typeName]!!.item(amount)
     }
 
-    fun itemForNoteBlock(block: BlockState): ItemStack? {
+    fun itemForModelId(modelId: Int, amount: Int = 1): ItemStack {
+        return avoItemByModelId[modelId]!!.item(amount)
+    }
+
+    fun itemForNoteBlock(block: BlockState): ItemStack {
         val (_, _, instrument, _, note) = block.blockData.asString.split(
             '[',
             '=',
@@ -260,11 +273,11 @@ object MaterialRegistry {
             ']'
         ) // TODO: heheheha this is very scuffed
         val nbId = instrument + note
-        return blockByNbId[nbId]?.item()
+        return avoBlockByNbId[nbId]?.item()!!
     }
 
     fun noteBlockForModelId(modelId: Int): NoteBlock {
-        val block = blockByModelId[modelId]
+        val block = avoBlockByModelId[modelId]
         val instrument = block?.instrument
         val note = block?.note
 

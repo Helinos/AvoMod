@@ -1,10 +1,7 @@
 package net.avocraft.avomod.recipe
 
 import kotlinx.serialization.json.*
-import net.avocraft.avomod.Plugin
-import net.avocraft.avomod.getResource
-import net.avocraft.avomod.metaNameOrDefault
-import net.avocraft.avomod.stackOf
+import net.avocraft.avomod.*
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.*
@@ -99,7 +96,7 @@ object RecipeRegistry {
     }
 
     private fun getKey(result: ItemStack, type: String) = keys.getOrPut(result.toString() + type) {
-        NamespacedKey(Plugin, "${result.metaNameOrDefault()}_${type}_${Bukkit.getRecipesFor(result).size}")
+        NamespacedKey(PLUGIN, "${result.metaNameOrDefault()}_${type}_${Bukkit.getRecipesFor(result).size}")
     }
 
     fun unregisterRecipes() {

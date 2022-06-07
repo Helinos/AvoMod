@@ -2,6 +2,7 @@ package net.avocraft.avomod
 
 import net.avocraft.avomod.AvoMod.Companion.NAME
 import net.avocraft.avomod.block.BlockHandler
+import net.avocraft.avomod.block.DurabilityHandler
 import net.avocraft.avomod.block.MaterialRegistry
 import net.avocraft.avomod.recipe.RecipeHandler
 import net.avocraft.avomod.recipe.RecipeRegistry
@@ -13,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin
 
 val Logger: Logger = LogManager.getLogger(NAME)
 
-lateinit var Plugin: AvoMod
+lateinit var PLUGIN: AvoMod
 
 class AvoMod : JavaPlugin() {
 
@@ -24,13 +25,16 @@ class AvoMod : JavaPlugin() {
     }
 
     init {
-        Plugin = this
+        PLUGIN = this
     }
+
+
 
     override fun onEnable() {
         MaterialRegistry // Need to reference this to init it
         server.pluginManager.registerEvents(BlockHandler, this)
         server.pluginManager.registerEvents(RecipeHandler, this)
+        server.pluginManager.registerEvents(DurabilityHandler, this)
         getCommand("avgive")?.run {
             setExecutor { _, _, _, args ->
                 var typeName = args[1]
@@ -49,7 +53,7 @@ class AvoMod : JavaPlugin() {
                     }.filter {
                         it.contains(args[0])
                     }
-                    2 -> MaterialRegistry.itemByTypeName.keys.toList().filter {
+                    2 -> MaterialRegistry.avoItemByTypeName.keys.toList().filter {
                         it.contains(args[1])
                     }
                     else -> if (args.size == 3 && args.getOrNull(2) == null)

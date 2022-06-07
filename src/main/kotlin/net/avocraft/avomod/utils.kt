@@ -11,6 +11,9 @@ fun String.toID() = lowercase().replace(' ', '_')
 
 fun ItemStack.metaNameOrDefault() = itemMeta?.displayName?.toID() ?: type.name
 
+// The funniest one-liner of all time
+fun ItemStack.typeNameOrDefault() = itemMeta?.customModelData?.let { MaterialRegistry.avoItemByModelId[it]?.typeName ?: "minecraft:${type.name}" } ?: "minecraft:${type.name}"
+
 // https://stackoverflow.com/a/67839914/18210688
 fun Any.getResource(folder: String) = this::class.java.getResource(folder)!!.toURI().let { uri ->
     try {
