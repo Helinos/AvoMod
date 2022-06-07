@@ -23,9 +23,9 @@ object MaterialRegistry {
     private val reservedNoteBlocks = HashSet<NoteBlock>()
 
     val avoItemByTypeName: HashBiMap<String, AvoItem> = HashBiMap.create()
-    val avoItemByModelId: HashBiMap<Int, AvoItem> = HashBiMap.create<Int, AvoItem>()
+    val avoItemByModelId: HashBiMap<Int, AvoItem> = HashBiMap.create()
     private val avoBlockByNbId = HashBiMap.create<String, AvoBlock>()
-    private val avoBlockByModelId = HashBiMap.create<Int, AvoBlock>()
+    val avoBlockByModelId: HashBiMap<Int, AvoBlock> = HashBiMap.create()
 
     // 1 - 1000 Blocks
     val TEST_BLOCK = registerBlock("test_block", "Test Block", Material.STONE, 1, "banjo", 0)
@@ -265,7 +265,7 @@ object MaterialRegistry {
         return avoItemByModelId[modelId]!!.item(amount)
     }
 
-    fun itemForNoteBlock(block: BlockState): ItemStack {
+    fun itemForNoteBlock(block: BlockState): ItemStack? {
         val (_, _, instrument, _, note) = block.blockData.asString.split(
             '[',
             '=',
@@ -273,7 +273,7 @@ object MaterialRegistry {
             ']'
         ) // TODO: heheheha this is very scuffed
         val nbId = instrument + note
-        return avoBlockByNbId[nbId]?.item()!!
+        return avoBlockByNbId[nbId]?.item()
     }
 
     fun noteBlockForModelId(modelId: Int): NoteBlock {

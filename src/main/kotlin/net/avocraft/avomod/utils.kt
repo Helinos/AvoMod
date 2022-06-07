@@ -5,6 +5,7 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import java.nio.file.FileSystemNotFoundException
 import java.nio.file.FileSystems
+import java.nio.file.Path
 import kotlin.io.path.toPath
 
 fun String.toID() = lowercase().replace(' ', '_')
@@ -15,7 +16,7 @@ fun ItemStack.metaNameOrDefault() = itemMeta?.displayName?.toID() ?: type.name
 fun ItemStack.typeNameOrDefault() = itemMeta?.customModelData?.let { MaterialRegistry.avoItemByModelId[it]?.typeName ?: "minecraft:${type.name}" } ?: "minecraft:${type.name}"
 
 // https://stackoverflow.com/a/67839914/18210688
-fun Any.getResource(folder: String) = this::class.java.getResource(folder)!!.toURI().let { uri ->
+fun Any.getResource(folder: String): Path = this::class.java.getResource(folder)!!.toURI().let { uri ->
     try {
         // Running in debug/ide
         uri.toPath()

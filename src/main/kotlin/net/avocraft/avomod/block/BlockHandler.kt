@@ -46,7 +46,6 @@ object BlockHandler : Listener {
                 event.block.blockData = block
             }
         }
-
     }
 
     @EventHandler
@@ -58,7 +57,7 @@ object BlockHandler : Listener {
             return
         }
 
-        MaterialRegistry.itemForNoteBlock(event.blockState)?.let {
+        MaterialRegistry.itemForNoteBlock(event.blockState)!!.let {
             event.items[0]?.itemStack = it
         }
     }
@@ -77,5 +76,21 @@ object BlockHandler : Listener {
             event.isCancelled = true
             event.block.state.update(true, false)
         }
+    }
+
+    @EventHandler
+    fun onBlockDamage(event: BlockDamageEvent) {
+        if (event.block.type == Material.NOTE_BLOCK && MaterialRegistry.itemForNoteBlock(event.block.state) != null) {
+            // There is probably a better way to do this
+            val modelId = MaterialRegistry.itemForNoteBlock(event.block.state)!!.itemMeta!!.customModelData
+            val avoBlock = MaterialRegistry.avoBlockByModelId[modelId]!!
+            val hardness = avoBlock.hardness
+            TODO()
+        }
+    }
+
+    @EventHandler
+    fun onBlockDamageAbort(event: BlockDamageAbortEvent) {
+        TODO()
     }
 }
